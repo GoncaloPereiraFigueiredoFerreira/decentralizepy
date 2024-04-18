@@ -24,6 +24,7 @@ class Sharing:
         compression_package=None,
         compression_class=None,
         float_precision=None,
+        n_faulty=0,
     ):
         """
         Constructor
@@ -58,6 +59,7 @@ class Sharing:
         self.dataset = dataset
         self.communication_round = 0
         self.log_dir = log_dir
+        self.n_fault = n_faulty
 
         self.shapes = []
         self.lens = []

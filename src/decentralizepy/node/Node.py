@@ -300,7 +300,7 @@ class Node:
             self.rank, self.machine_id, self.mapping, self.graph.n_procs, **comm_params
         )
 
-    def init_sharing(self, sharing_configs):
+    def init_sharing(self, sharing_configs, n_faulty):
         """
         Instantiate sharing module from config.
 
@@ -324,6 +324,7 @@ class Node:
             self.model,
             self.dataset,
             self.log_dir,
+            n_faulty,
             **sharing_params
         )
 
