@@ -87,6 +87,11 @@ def get_args():
     parser.add_argument("-sr", "--server_rank", type=int, default=-1)
     parser.add_argument("-wr", "--working_rate", type=float, default=1.0)
 
+    parser.add_argument("-b", "--byzantine", type=int, default=0)
+    parser.add_argument("-bt", "--byzantine_type", type=str, default="sf")
+    parser.add_argument("-s", "--summary", type=str, default="summary")
+    parser.add_argument("-sg", "--summary_graph", type=int, default=0)
+
     args = parser.parse_args()
     return args
 
