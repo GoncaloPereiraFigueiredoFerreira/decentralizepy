@@ -1,4 +1,5 @@
 import logging
+import threading
 
 import torch
 
@@ -175,3 +176,35 @@ class Training:
                     logging.debug("Round: {} loss: {}".format(count, iter_loss / count))
                     if count >= self.rounds:
                         break
+
+    def stopable_train(self, dataset, stop_event: threading.Event):
+        """
+        One training iteration
+
+        Parameters
+        ----------
+        dataset : decentralizepy.datasets.Dataset
+            The training dataset. Should implement get_trainset(batch_size, shuffle)
+
+        stop_event: threading.Event
+            Stop event that may be set by another thread, to stop training cycle
+
+        """
+        self.model.train()
+        self.gradients = {}
+
+        iter_loss = 0.0
+        count = 0
+        trainset = dataset.get_trainset(self.batch_size, self.shuffle)
+        while count < self.rounds and not (
+            stop_event.is_set() and count > self.rounds / 4
+        ):
+            for data, target in trainset:
+                iter_loss += self.trainstep(data, target)
+                count += 1
+                if count % 5 == 0:
+                    logging.debug("Round: {} loss: {}".format(count, iter_loss / count))
+                if count >= self.rounds or (
+                    stop_event.is_set() and count > self.rounds / 4
+                ):
+                    break

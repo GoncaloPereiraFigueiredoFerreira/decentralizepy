@@ -66,7 +66,7 @@ class Sharing:
         with torch.no_grad():
             for _, v in self.model.state_dict().items():
                 self.shapes.append(v.shape)
-                t = v.flatten().numpy()
+                t = v.flatten().cpu().numpy()
                 self.lens.append(t.shape[0])
 
         self.compress = compress
