@@ -123,6 +123,9 @@ def write_args(args, path):
         "train_evaluate_after": args.train_evaluate_after,
         "reset_optimizer": args.reset_optimizer,
         "working_rate": args.working_rate,
+        "byzantine": args.byzantine,
+        "byzantine_type":args.byzantine_type,
+        "summary_graph":args.summary_graph
     }
     with open(os.path.join(path, "args.json"), "w") as of:
         json.dump(data, of)
