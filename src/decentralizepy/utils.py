@@ -125,6 +125,7 @@ def write_args(args, path):
         "working_rate": args.working_rate,
         "byzantine": args.byzantine,
         "byzantine_type":args.byzantine_type,
+        "summary":args.summary,
         "summary_graph":args.summary_graph
     }
     with open(os.path.join(path, "args.json"), "w") as of:
