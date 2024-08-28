@@ -280,5 +280,6 @@ class DirichletDataPartitioner(DataPartitioner):
             local_sizes.append(len(net_dataidx_map[i]))
         local_sizes = np.array(local_sizes)
         counts = local_sizes  # return counts insteads of ratios
+        print(counts)
 
         return idx_batch, counts
