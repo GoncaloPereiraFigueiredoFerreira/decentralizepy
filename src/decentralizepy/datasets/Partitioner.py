@@ -250,12 +250,13 @@ class DirichletDataPartitioner(DataPartitioner):
                 rng.shuffle(idx_k)
                 proportions = rng.dirichlet(np.repeat(alpha, n_nets))
                 ## Balance
-                proportions = np.array(
-                    [
-                        p * (len(idx_j) < N / n_nets)
-                        for p, idx_j in zip(proportions, idx_batch)
-                    ]
-                )
+                # proportions = np.array(
+                #    [
+                #        p * (len(idx_j) < N / n_nets)
+                #        for p, idx_j in zip(proportions, idx_batch)
+                #    ]
+                # )
+
                 proportions = proportions / proportions.sum()
                 proportions = (np.cumsum(proportions) * len(idx_k)).astype(int)[:-1]
                 idx_batch = [
@@ -280,6 +281,5 @@ class DirichletDataPartitioner(DataPartitioner):
             local_sizes.append(len(net_dataidx_map[i]))
         local_sizes = np.array(local_sizes)
         counts = local_sizes  # return counts insteads of ratios
-        print(counts)
 
         return idx_batch, counts
