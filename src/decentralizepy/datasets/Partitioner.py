@@ -249,6 +249,7 @@ class DirichletDataPartitioner(DataPartitioner):
                 idx_k = np.where(labelList == k)[0]
                 rng.shuffle(idx_k)
                 proportions = rng.dirichlet(np.repeat(alpha, n_nets))
+
                 ## Balance
                 # proportions = np.array(
                 #    [
@@ -257,24 +258,27 @@ class DirichletDataPartitioner(DataPartitioner):
                 #    ]
                 # )
 
-                proportions = proportions / proportions.sum()
-                proportions = (np.cumsum(proportions) * len(idx_k)).astype(int)[:-1]
+                # proportions = proportions / proportions.sum()
+                proportions = len(idx_k) * proportions
+                int_proportions = np.round(proportions).astype(int)
+                diff = len(idx_k) - np.sum(int_proportions)
+                adjustment_indices = np.argsort(proportions - int_proportions)
+
+                for i in range(int(abs(diff))):
+                    int_proportions[adjustment_indices[i]] += np.sign(diff)
+
+                proportions = (np.cumsum(int_proportions)).astype(int)[:-1]
+
                 idx_batch = [
                     idx_j + idx.tolist()
                     for idx_j, idx in zip(idx_batch, np.split(idx_k, proportions))
                 ]
+
                 min_size = min([len(idx_j) for idx_j in idx_batch])
 
         for j in range(n_nets):
             rng.shuffle(idx_batch[j])
             net_dataidx_map[j] = idx_batch[j]
-
-        net_cls_counts = {}
-
-        for net_i, dataidx in net_dataidx_map.items():
-            unq, unq_cnt = np.unique(labelList[dataidx], return_counts=True)
-            tmp = {unq[i]: unq_cnt[i] for i in range(len(unq))}
-            net_cls_counts[net_i] = tmp
 
         local_sizes = []
         for i in range(n_nets):
